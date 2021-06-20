@@ -1,0 +1,14 @@
+general ideia:
+  
+search algorithms:
+  depth first search
+  breadth first search
+  dijkstra algorithm
+  // ant colony algorithm
+  -> a* algorithm
+programming language implementation:
+  -> python (média. implementações simples e relativamente rápido)
+  c (fastest and furious)
+  c# (c orientado a objetos. fast and angry)
+  java (tipo margarina. sempre presente, mas todo mundo sabe que chimia é melhor)
+  haskell (prepare for trouble and make it double)
