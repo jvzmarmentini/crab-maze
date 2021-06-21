@@ -68,6 +68,24 @@ def aStar(graph, maze, crabP, exitP):
         f_cost = g_cost + h_cost
         graph.add_node('S', g_cost=g_cost, h_cost=h_cost, f_cost=f_cost)
         print(graph.nodes.data())
+
+        for i in range(len(maze)):
+            for j in range(len(maze[i])):
+                node = (i,j)
+                graph.add_node(node) #CALCULAR E ADICIONAR F, G e H
+                edge = (i,j)
+                if(maze[i][j] != 'X'): #QUANDO I OU J SÃO 0 NÃO FAZER -1
+                    #laterais
+                    graph.add_edge(edge, (i+1,j))
+                    graph.add_edge(edge, (i-1,j))
+                    graph.add_edge(edge, (i,j+1))
+                    graph.add_edge(edge, (i,j-1))
+                    #diagonais
+                    graph.add_edge(edge, (i+1,j+1))
+                    graph.add_edge(edge, (i+1,j-1))
+                    graph.add_edge(edge, (i-1,j-1))
+                    graph.add_edge(edge, (i-1,j+1))
+
     else:
         return -1
 
