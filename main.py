@@ -46,7 +46,7 @@ def readFile(file_path):
 
 
 def getPosition(list, char):
-    y = next(i for i, v in enumerate(list) if char in v)
+    y = next(x for x, v in enumerate(list) if char in v)
     x = list[y].index(char)
     return [x, y]
 
@@ -55,6 +55,7 @@ def aStar(graph, maze, crabP, exitP):
     # both odd or even
     if(XNOR(isOdd(sum(crabP)), isOdd(sum(exitP)))):
         # start node
+        """
         g_cost = 0
         h_cost = int(math.sqrt(pow(exitP[0] + crabP[0], 2) +
                                pow(exitP[1] + crabP[1], 2)) * 10)
@@ -68,27 +69,24 @@ def aStar(graph, maze, crabP, exitP):
         f_cost = g_cost + h_cost
         graph.add_node('S', g_cost=g_cost, h_cost=h_cost, f_cost=f_cost)
         print(graph.nodes.data())
-
-        for i in range(len(maze)):
-            for j in range(len(maze[i])):
-                node = (i,j)
-                graph.add_node(node) #CALCULAR E ADICIONAR F, G e H
-                edge = (i,j)
-                if(maze[i][j] != 'X'): #QUANDO I OU J SÃO 0 NÃO FAZER -1
+        """
+        for x in range(len(maze)):
+            for y in range(len(maze[x])):
+                node = 'node{a}{b}'.format(a=x, b=y)
+                if(maze[x][y] == 'C'):
+                    node = 'C'
+                elif(maze[x][y] == 'S'):
+                    node = 'S'
+                graph.add_node(node, pos=(y,x)) #CALCULAR E ADICIONAR F, G e H
+                edge = 'edge{a}{b}'.format(a=x, b=y)
+                
+                if(maze[x][y] != 'X'): #QUANDO I OU J SÃO 0 NÃO FAZER -1
                     #laterais
-                    graph.add_edge(edge, (i+1,j))
-                    graph.add_edge(edge, (i-1,j))
-                    graph.add_edge(edge, (i,j+1))
-                    graph.add_edge(edge, (i,j-1))
+                    graph.add_edge('{a}{b}'.format(a=x, b=y), (x,y))
+                    print()
                     #diagonais
-                    graph.add_edge(edge, (i+1,j+1))
-                    graph.add_edge(edge, (i+1,j-1))
-                    graph.add_edge(edge, (i-1,j-1))
-                    graph.add_edge(edge, (i-1,j+1))
-
-    else:
+    else:  
         return -1
-
 
 def isOdd(x):
     return x % 2
@@ -102,14 +100,23 @@ def XNOR(A, B):
     return NOT(A ^ B)
 
 
+
 maze = readFile("3_3.txt")
 crab_position = getPosition(maze, 'C')
 exit_position = getPosition(maze, 'S')
 graph = nx.Graph()
 aStar(graph, maze, crab_position, exit_position)
 
+pos = nx.get_node_attributes(graph, 'pos') #gera dicionario com a posição dos nodos
+print(pos)
+options={
+    'with_labels': False, 
+    #'font_weight': 'bold',
+    'node_size': 50,
+    'pos': pos
+}
 
-nx.draw(graph, with_labels=True, font_weight='bold')
+nx.draw_networkx(graph, pos) #passando a posição ele ordena
 
 
 plt.show()
