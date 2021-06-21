@@ -19,15 +19,15 @@
 #     if current is the target node //path has been found
 #         return
 
-#     foreach neighbour of the current node
-#         if neighbour is not traversable or neighbour is in CLOSED
-#             skip to the next neighbour
+#     foreach neighbor of the current node
+#         if neighbor is not traversable or neighbor is in CLOSED
+#             skip to the next neighbor
 
-#         if new path to neighbour is shorter OR neighbour is not in OPEN
-#             set f_cost of neighbour
-#             set parent of neighbour to current
-#             if neighbour is not in OPEN
-#                 add neighbour to OPEN
+#         if new path to neighbor is shorter OR neighbor is not in OPEN
+#             set f_cost of neighbor
+#             set parent of neighbor to current
+#             if neighbor is not in OPEN
+#                 add neighbor to OPEN
 
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -90,8 +90,5 @@ exit_position = getPosition(maze, 'S')
 graph = nx.Graph()
 aStar(graph, maze, crab_position, exit_position)
 
-
 nx.draw(graph, with_labels=True, font_weight='bold')
-
-
 plt.show()
