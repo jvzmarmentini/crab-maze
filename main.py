@@ -5,7 +5,11 @@
 
 # SEE AStarGuide.jpeg (sorry for the bad quality ;-;)
 
+# @see https://www.youtube.com/watch?v=-L-WgKMFuhE
+
+# @see https://networkx.org/
 import networkx as nx
+# @see https://matplotlib.org/
 import matplotlib.pyplot as plt
 import math
 import heapq
@@ -94,6 +98,7 @@ class Heap(object):
         del self.queueIndex[self.key(result)]
         return result
 
+    # TODO test
     def hasNode(self, item):
         return self.key(item) in self.queueIndex
 
@@ -113,6 +118,8 @@ class Node():
 
 
 def traversableNeighbors(current, maze):
+    # TODO add edges
+
     neighbors_nodes = []
     currentX = current.position[0]
     currentY = current.position[1]
