@@ -5,33 +5,10 @@
 
 # SEE AStarGuide.jpeg (sorry for the bad quality ;-;)
 
-# PSEUDOCODE
-
-# OPEN //the set of nodes to be evaluated
-# CLOSED //the set of nodes already evaluated
-# add the start node to OPEN
-
-# loop
-#     current = node in OPEN with the lowest f_cost
-#     remove current from OPEN
-#     add current to CLOSED
-
-#     if current is the target node //path has been found
-#         return
-
-#     foreach neighbor of the current node
-#         if neighbor is not traversable or neighbor is in CLOSED
-#             skip to the next neighbor
-
-#         if new path to neighbor is shorter OR neighbor is not in OPEN
-#             set f_cost of neighbor
-#             set parent of neighbor to current
-#             if neighbor is not in OPEN
-#                 add neighbor to OPEN
-
 import networkx as nx
 import matplotlib.pyplot as plt
 import math
+import heapq
 
 
 def readFile(file_path):
@@ -51,40 +28,38 @@ def getPosition(list, char):
     return [x, y]
 
 
-def aStar(graph, maze, crabP, exitP):
+def aStar(graph, maze):
     # both odd or even
     if(XNOR(isOdd(sum(crabP)), isOdd(sum(exitP)))):
+        # open
+        open_nodes = Heap(key=lambda self: self.f_cost)
+
+        # closed
+        closed_nodes = Heap()
+
         # start node
-        g_cost = 0
-        h_cost = int(math.sqrt(pow(exitP[0] + crabP[0], 2) +
-                               pow(exitP[1] + crabP[1], 2)) * 10)
-        f_cost = g_cost + h_cost
-        graph.add_node('C', g_cost=g_cost, h_cost=h_cost, f_cost=f_cost)
+        crab_node = Node(position=crabP)
+        graph.add_node(crab_node)
 
         # end node
-        g_cost = int(math.sqrt(pow(crabP[0] + exitP[0], 2) +
-                               pow(crabP[1] + exitP[1], 2)) * 10)
-        h_cost = 0
-        f_cost = g_cost + h_cost
-        graph.add_node('S', g_cost=g_cost, h_cost=h_cost, f_cost=f_cost)
-        print(graph.nodes.data())
+        exit_node = Node(position=exitP)
+        graph.add_node(exit_node)
 
-        for i in range(len(maze)):
-            for j in range(len(maze[i])):
-                node = (i,j)
-                graph.add_node(node) #CALCULAR E ADICIONAR F, G e H
-                edge = (i,j)
-                if(maze[i][j] != 'X'): #QUANDO I OU J SÃO 0 NÃO FAZER -1
-                    #laterais
-                    graph.add_edge(edge, (i+1,j))
-                    graph.add_edge(edge, (i-1,j))
-                    graph.add_edge(edge, (i,j+1))
-                    graph.add_edge(edge, (i,j-1))
-                    #diagonais
-                    graph.add_edge(edge, (i+1,j+1))
-                    graph.add_edge(edge, (i+1,j-1))
-                    graph.add_edge(edge, (i-1,j-1))
-                    graph.add_edge(edge, (i-1,j+1))
+        # add current to open
+        open_nodes.push(crab_node)
+
+        while(True):
+            current = open_nodes.pop()
+            closed_nodes.push(current)
+
+            if(current == exit_node):
+                # code returning path
+                return current.parent
+
+            for neighbor in traversableNeighbors(current, maze):
+                # skip if neighbor is in closed
+                if(closed_nodes.hasNode(neighbor)):
+                    continue
 
     else:
         return -1
@@ -102,11 +77,88 @@ def XNOR(A, B):
     return NOT(A ^ B)
 
 
+class Heap(object):
+    def __init__(self, initial=None, key=lambda x: x):
+        self.key = key
+        self.index = 0
+        self._data = []
+        self.queueIndex = {}
+
+    def push(self, item):
+        heapq.heappush(self._data, (self.key(item), self.index, item))
+        self.queueIndex[self.key(item)] = item
+        self.index += 1
+
+    def pop(self):
+        result = heapq.heappop(self._data)[2]
+        del self.queueIndex[self.key(result)]
+        return result
+
+    def hasNode(self, item):
+        return self.key(item) in self.queueIndex
+
+
+class Node():
+    def __init__(self, parent=None, position=[0, 0]):
+        self.parent = parent
+        self.position = position
+        self.f_cost = self.getFCost()
+
+    def getFCost(self):
+        g_cost = int(math.sqrt(pow(crabP[0] + self.position[0], 2) +
+                               pow(crabP[1] + self.position[1], 2)) * 10)
+        h_cost = int(math.sqrt(pow(exitP[0] + self.position[0], 2) +
+                               pow(exitP[1] + self.position[1], 2)) * 10)
+        return g_cost + h_cost
+
+
+def traversableNeighbors(current, maze):
+    neighbors_nodes = []
+    currentX = current.position[0]
+    currentY = current.position[1]
+
+    # North
+    if(maze[currentX][currentY+2] == '.' and maze[currentX][currentY+1] == '.'):
+        neighbors_nodes.append(Node(current, position=[currentX, currentY+2]))
+
+    if(maze[currentX+1][currentY+1] == '.'):
+        neighbors_nodes.append(
+            Node(current, position=[currentX+1, currentY+1]))
+
+    # East
+    if(maze[currentX+2][currentY] == '.' and maze[currentX+1][currentY] == '.'):
+        neighbors_nodes.append(Node(current, position=[currentX+2, currentY]))
+
+    if(maze[currentX+1][currentY-1] == '.'):
+        neighbors_nodes.append(
+            Node(current, position=[currentX+1, currentY-1]))
+
+    # South
+    if(maze[currentX][currentY-2] == '.' and maze[currentX][currentY-1] == '.'):
+        neighbors_nodes.append(Node(current, position=[currentX, currentY-2]))
+
+    if(maze[currentX-1][currentY-1] == '.'):
+        neighbors_nodes.append(
+            Node(current, position=[currentX-1, currentY-1]))
+
+    # West
+    if(maze[currentX-2][currentY] == '.' and maze[currentX-1][currentY] == '.'):
+        neighbors_nodes.append(Node(current, position=[currentX-2, currentY]))
+
+    if(maze[currentX-1][currentY+1] == '.'):
+        neighbors_nodes.append(
+            Node(current, position=[currentX-1, currentY+1]))
+
+    return neighbors_nodes
+
+
 maze = readFile("3_3.txt")
-crab_position = getPosition(maze, 'C')
-exit_position = getPosition(maze, 'S')
+global crabP
+crabP = getPosition(maze, 'C')
+global exitP
+exitP = getPosition(maze, 'S')
 graph = nx.Graph()
-aStar(graph, maze, crab_position, exit_position)
+aStar(graph, maze)
 
 nx.draw(graph, with_labels=True, font_weight='bold')
 plt.show()
