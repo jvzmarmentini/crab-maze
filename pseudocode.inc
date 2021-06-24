@@ -19,3 +19,13 @@ loop
             set parent of neighbor to current
             if neighbor is not in OPEN
                 add neighbor to OPEN
+
+
+
+[
+    "....."
+    ".x..."
+    "..C.."
+    "....."
+    "....S"
+]

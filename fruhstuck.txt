@@ -12,3 +12,68 @@ programming language implementation:
   c# (c orientado a objetos. fast and angry)
   java (tipo margarina. sempre presente, mas todo mundo sabe que chimia é melhor)
   haskell (prepare for trouble and make it double)
+
+
+[
+  Não existe solução para este labirinto! = matematicamente impossivel
+  Solução para esse caminho não existe = ambiente externo impossibilita (parede)
+  [
+    50x50
+    22
+    astar_path: 0.00021195411682128906 seconds; nodes visited:  22
+    dijkstra_path: 0.0018758773803710938 seconds; nodes visited:  21
+    shortest_path: 0.0017137527465820312 seconds; nodes visited:  21
+    after draw: 0.15819001197814941 seconds
+  ]
+  [
+    75x75_1
+    Não existe solução para este labirinto!
+  ]
+  [
+    75x75_2
+    Solução para esse caminho não existe
+  ]
+  [
+    75x75_3
+    Não existe solução para este labirinto!
+  ]
+  [
+    75x75_4
+    Solução para esse caminho não existe
+  ]
+  [
+    75x75_5
+    59
+    astar_path: 0.0007832050323486328 seconds; nodes visited:  59
+    dijkstra_path: 0.003633737564086914 seconds; nodes visited:  42
+    shortest_path: 0.002979755401611328 seconds; nodes visited:  42
+    after draw: 0.21498918533325195 seconds
+  ]
+  [
+    75x75
+    Solução para esse caminho não existe
+  ]
+  [
+    100x100
+    Não existe solução para este labirinto!
+  ]
+  [
+    250x250
+    Não existe solução para este labirinto!
+  ]
+  [
+    640x480
+    242
+    astar_path: 0.0045468807220458984 seconds; nodes visited:  242
+    dijkstra_path: 1.4272122383117676 seconds; nodes visited:  232
+    shortest_path: 1.3779242038726807 seconds; nodes visited:  232
+  ]
+  [
+    1000x1000
+    364
+    astar_path: 0.00940084457397461 seconds; nodes visited:  364
+dijkstra_path: 2.756134033203125 seconds; nodes visited:  317
+shortest_path: 2.948012113571167 seconds; nodes visited:  317
+    after draw: 34.42865204811096 seconds
+  ]
+]

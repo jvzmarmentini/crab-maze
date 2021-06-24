@@ -5,6 +5,7 @@
 
 # SEE AStarGuide.jpeg (sorry for the bad quality ;-;)
 
+
 # @see https://www.youtube.com/watch?v=-L-WgKMFuhE
 
 # @see https://networkx.org/
@@ -36,7 +37,7 @@ def aStar(graph, maze):
     # both odd or even
     if(XNOR(isOdd(sum(crabP)), isOdd(sum(exitP)))):
         # open
-        open_nodes = Heap(key=lambda self: self.f_cost)
+        open_nodes = Heap(key=lambda self: self.fCost())
 
         # closed
         closed_nodes = Heap()
@@ -52,13 +53,16 @@ def aStar(graph, maze):
         # add current to open
         open_nodes.push(crab_node)
 
-        while(True):
+        while(open_nodes.size() > 0):
             current = open_nodes.pop()
             closed_nodes.push(current)
 
             if(current == exit_node):
-                # code returning path
-                return current.parent
+                path = []
+                while current != crab_node:
+                    path.append(current)
+                    current = current.parent
+                return path[::-1]
 
             for neighbor in traversableNeighbors(current, maze):
                 # skip if neighbor is in closed
@@ -73,12 +77,8 @@ def isOdd(x):
     return x % 2
 
 
-def NOT(A):
-    return ~A+2
-
-
 def XNOR(A, B):
-    return NOT(A ^ B)
+    return not(A ^ B)
 
 
 class Heap(object):
@@ -102,19 +102,19 @@ class Heap(object):
     def hasNode(self, item):
         return self.key(item) in self.queueIndex
 
+    def size(self):
+        return len(self._data)
+
 
 class Node():
     def __init__(self, parent=None, position=[0, 0]):
         self.parent = parent
         self.position = position
-        self.f_cost = self.getFCost()
+        self.g_cost = getDistance(crabP, position)
+        self.h_cost = getDistance(exitP, position)
 
-    def getFCost(self):
-        g_cost = int(math.sqrt(pow(crabP[0] + self.position[0], 2) +
-                               pow(crabP[1] + self.position[1], 2)) * 10)
-        h_cost = int(math.sqrt(pow(exitP[0] + self.position[0], 2) +
-                               pow(exitP[1] + self.position[1], 2)) * 10)
-        return g_cost + h_cost
+    def fCost(self):
+        return self.g_cost + self.h_cost
 
 
 def traversableNeighbors(current, maze):
@@ -159,13 +159,21 @@ def traversableNeighbors(current, maze):
     return neighbors_nodes
 
 
+def getDistance(nodeA, nodeB):
+    dstX = abs(nodeA[0] - nodeB[0])
+    dstY = abs(nodeA[1] - nodeB[1])
+    if(dstX > dstY):
+        return 14*dstY + 10*(dstX - dstY)
+    return 14*dstX + 10*(dstY-dstX)
+
+
 maze = readFile("3_3.txt")
 global crabP
 crabP = getPosition(maze, 'C')
 global exitP
 exitP = getPosition(maze, 'S')
 graph = nx.Graph()
-aStar(graph, maze)
+print(aStar(graph, maze))
 
 nx.draw(graph, with_labels=True, font_weight='bold')
 plt.show()
